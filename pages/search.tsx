@@ -5,7 +5,6 @@ import { Contact } from '@/types';
 
 const SearchPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  // 検索結果は常に Contact の配列として扱う
   const [results, setResults] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
@@ -24,9 +23,9 @@ const SearchPage: React.FC = () => {
     setCurrentPage(1);
     try {
       const response = await contactAPI.search(searchQuery, 1, perPage);
-      // API の data プロパティに配列を期待
-      setResults(response.data.data);
-      setTotalPages(response.data.data.length === perPage ? 2 : 1);
+      // response.data が Contact[] の配列なので、このままセット
+      setResults(response.data);
+      setTotalPages(response.data.length === perPage ? 2 : 1);
     } catch (error) {
       console.error('Failed to search contacts:', error);
       setResults([]);
@@ -44,7 +43,7 @@ const SearchPage: React.FC = () => {
     try {
       const response = await contactAPI.search(searchQuery, currentPage, perPage);
       setResults(response.data);
-      setTotalPages(response.data.data.length === perPage ? currentPage + 1 : currentPage);
+      setTotalPages(response.data.length === perPage ? currentPage + 1 : currentPage);
     } catch (error) {
       console.error('Failed to search contacts:', error);
       setResults([]);
@@ -133,23 +132,25 @@ const SearchPage: React.FC = () => {
                     <table className="w-full">
                       <thead className="bg-primary-50">
                         <tr>
-                          <th className="...">作成者</th>
-                          <th className="...">面談日</th>
-                          <th className="...">タイトル</th>
-                          <th className="...">操作</th>
+                          <th className="px-4 py-2">作成者</th>
+                          <th className="px-4 py-2">面談日</th>
+                          <th className="px-4 py-2">タイトル</th>
+                          <th className="px-4 py-2">操作</th>
                         </tr>
                       </thead>
                       <tbody className="bg-white divide-y divide-gray-200">
                         {results.map(contact => (
                           <tr key={contact.id} className="hover:bg-gray-50">
-                            <td className="...">{contact.coworker?.name || '不明'}</td>
-                            <td className="...">{formatDate(contact.contact_date)}</td>
-                            <td className="...">{contact.title || '(未設定)'}</td>
-                            <td className="...">
+                            <td className="px-4 py-2">{contact.coworker?.name || '不明'}</td>
+                            <td className="px-4 py-2">{formatDate(contact.contact_date)}</td>
+                            <td className="px-4 py-2">{contact.title || '(未設定)'}</td>
+                            <td className="px-4 py-2">
                               <button
                                 onClick={() => handleView(contact.id)}
                                 className="secondary-button text-xs px-3 py-1"
-                              >参照</button>
+                              >
+                                参照
+                              </button>
                             </td>
                           </tr>
                         ))}
@@ -160,9 +161,23 @@ const SearchPage: React.FC = () => {
                 {/* ページネーション */}
                 {totalPages > 1 && (
                   <div className="flex justify-center space-x-4 mt-8">
-                    <button onClick={() => setCurrentPage(p => Math.max(1, p-1))} disabled={currentPage===1} className="...">前へ</button>
-                    <span className="text-sm text-gray-600">{currentPage}/{totalPages}</span>
-                    <button onClick={() => setCurrentPage(p => Math.min(totalPages, p+1))} disabled={currentPage===totalPages} className="...">次へ</button>
+                    <button
+                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                      disabled={currentPage === 1}
+                      className="px-4 py-2 rounded border"
+                    >
+                      前へ
+                    </button>
+                    <span className="text-sm text-gray-600">
+                      {currentPage}/{totalPages}
+                    </span>
+                    <button
+                      onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                      disabled={currentPage === totalPages}
+                      className="px-4 py-2 rounded border"
+                    >
+                      次へ
+                    </button>
                   </div>
                 )}
               </>
@@ -180,15 +195,38 @@ const SearchPage: React.FC = () => {
               </div>
               <div className="p-6 overflow-y-auto space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div><label className="...">日時</label><p className="...">{formatDate(selectedContact.contact_date)}</p></div>
-                  <div><label className="...">場所</label><p className="...">{selectedContact.location||'未設定'}</p></div>
+                  <div><label className="block text-sm font-medium">日時</label><p>{formatDate(selectedContact.contact_date)}</p></div>
+                  <div><label className="block text-sm font-medium">場所</label><p>{selectedContact.location || '未設定'}</p></div>
                 </div>
-                <div><label className="...">タイトル</label><p className="...">{selectedContact.title||'未設定'}</p></div>
-                <div><label className="...">担当者</label><div>{selectedContact.persons?.map(p=><p key={p.id}>{p.name}({p.company})</p>)}</div></div>
-                {selectedContact.companions?.length>0 && (<div><label className="...">同席</label><div>{selectedContact.companions.map(c=><p key={c.id}>{c.name}</p>)}</div></div>)}
-                {selectedContact.summary_text && (<div><label className="...">要約</label><p className="... whitespace-pre-wrap">{selectedContact.summary_text}</p></div>)}
+                <div><label className="block text-sm font-medium">タイトル</label><p>{selectedContact.title || '未設定'}</p></div>
+                <div>
+                  <label className="block text-sm font-medium">担当者</label>
+                  <div>
+                    {selectedContact.persons?.map(p => (
+                      <p key={p.id}>{p.name} ({p.company})</p>
+                    ))}
+                  </div>
+                </div>
+                {selectedContact.companions?.length > 0 && (
+                  <div>
+                    <label className="block text-sm font-medium">同席</label>
+                    <div>
+                      {selectedContact.companions.map(c => <p key={c.id}>{c.name}</p>)}
+                    </div>
+                  </div>
+                )}
+                {selectedContact.summary_text && (
+                  <div>
+                    <label className="block text-sm font-medium">要約</label>
+                    <p className="whitespace-pre-wrap">{selectedContact.summary_text}</p>
+                  </div>
+                )}
               </div>
-              <div className="p-6 border-t"><button onClick={()=>setSelectedContact(null)} className="secondary-button">閉じる</button></div>
+              <div className="p-6 border-t">
+                <button onClick={() => setSelectedContact(null)} className="secondary-button">
+                  閉じる
+                </button>
+              </div>
             </div>
           </div>
         )}
