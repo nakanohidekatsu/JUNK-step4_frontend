@@ -25,8 +25,8 @@ const SearchPage: React.FC = () => {
     try {
       const response = await contactAPI.search(searchQuery, 1, perPage);
       // API の data プロパティに配列を期待
-      setResults(response.data);
-      setTotalPages(response.data.length === perPage ? 2 : 1);
+      setResults(response.data.data);
+      setTotalPages(response.data.data.length === perPage ? 2 : 1);
     } catch (error) {
       console.error('Failed to search contacts:', error);
       setResults([]);
@@ -44,7 +44,7 @@ const SearchPage: React.FC = () => {
     try {
       const response = await contactAPI.search(searchQuery, currentPage, perPage);
       setResults(response.data);
-      setTotalPages(response.data.length === perPage ? currentPage + 1 : currentPage);
+      setTotalPages(response.data.data.length === perPage ? currentPage + 1 : currentPage);
     } catch (error) {
       console.error('Failed to search contacts:', error);
       setResults([]);
