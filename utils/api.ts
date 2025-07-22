@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import { LoginRequest, LoginResponse, Contact, ContactFormData, BusinessCard, Coworker, SearchRequest, SearchResponse, SummaryRequest, SummaryResponse } from '@/types';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_URL = process.env.NEXT_PUBLIC_API_ENDPOINT || 'http://localhost:8000';
 
 // Axiosインスタンスの作成
 const api = axios.create({
