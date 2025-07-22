@@ -147,7 +147,9 @@ const SearchPage: React.FC = () => {
                       <tbody className="bg-white divide-y divide-gray-200">
                         {results.map(contact => (
                           <tr key={contact.id} className="hover:bg-gray-50">
-                            <td className="px-4 py-2">{contact.coworker?.name || '不明'}</td>
+                            <td className="px-4 py-2">
+                              {contact.persons?.[0]?.name || '不明'}
+                            </td>
                             <td className="px-4 py-2">{formatDate(contact.contact_date)}</td>
                             <td className="px-4 py-2">{contact.title || '(未設定)'}</td>
                             <td className="px-4 py-2">
