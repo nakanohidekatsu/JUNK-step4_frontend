@@ -7,7 +7,8 @@ import { Contact } from '@/types';
 const SearchPage: React.FC = () => {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
-  const [results, setResults] = useState<Contact[]>([]);
+  // const [results, setResults] = useState<Contact[]>([]);
+  const [results, setResults] = useState<SearchResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
@@ -66,7 +67,8 @@ const SearchPage: React.FC = () => {
 
     setLoading(true);
     try {
-      const response = await contactAPI.search(searchQuery, currentPage, perPage);
+      // const response = await contactAPI.search(searchQuery, currentPage, perPage);
+      const response = await contactAPI.search(searchQuery, 1, perPage);
       setResults(response.data);
       setTotalPages(response.data.length === perPage ? currentPage + 1 : currentPage);
     } catch (error) {
