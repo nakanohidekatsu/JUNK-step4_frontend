@@ -19,9 +19,11 @@ const Sidebar: React.FC = () => {
 
   return (
     <div className="fixed left-0 top-0 h-full w-64 sidebar p-4">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-primary-700">面談アプリ</h1>
-      </div>
+      <div className="mb-8">  <Link href="/">
+        <h1 className="text-2xl font-bold text-primary-700 cursor-pointer hover:underline">
+          面談アプリ
+        </h1>
+      </Link></div>
       
       <nav className="space-y-2">
         {menuItems.map((item) => (
