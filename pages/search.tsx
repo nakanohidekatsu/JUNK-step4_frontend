@@ -196,7 +196,7 @@ const SearchPage: React.FC = () => {
         {/* 詳細モーダル */}
         {selectedContact && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-soft max-w-4xl w-full mx-4 max-h-[80vh] overflow-hidden">
+            <div className="bg-white rounded-soft max-w-4xl w-full mx-4 max-h-[80vh] flex flex-col overflow-hidden">
               <div className="p-6 border-b flex justify-between items-center">
                 <h2 className="text-xl font-semibold text-primary-700">面談記録詳細</h2>
                 <button onClick={() => setSelectedContact(null)} className="text-2xl">×</button>
